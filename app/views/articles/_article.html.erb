@@ -14,4 +14,13 @@
     <%= article.author %>
   </div>
 
+  <div>
+    <strong>Status:</strong>
+    <% if article.processed? %>
+      Processed at <%= article.processed_at.strftime("%H:%M:%S") %>
+    <% else %>
+      <em>Processing via Sidekiq...</em>
+    <% end %>
+  </div>
+
 </div>
