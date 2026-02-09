@@ -87,18 +87,13 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: rails_complete_production
-    username: rails_complete
-    password: <%= ENV["RAILS_COMPLETE_DATABASE_PASSWORD"] %>
+    url: <%= ENV["DATABASE_URL"] %>
   cache:
     <<: *primary_production
-    database: rails_complete_production_cache
     migrations_paths: db/cache_migrate
   queue:
     <<: *primary_production
-    database: rails_complete_production_queue
     migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
-    database: rails_complete_production_cable
     migrations_paths: db/cable_migrate
