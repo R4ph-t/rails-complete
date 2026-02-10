@@ -27,8 +27,6 @@ projects:
                 value: production
               - key: RAILS_MASTER_KEY
                 sync: false
-              - key: SECRET_KEY_BASE
-                sync: false
 
           # Background worker (from Heroku worker dyno — Basic)
           - type: worker
@@ -51,8 +49,6 @@ projects:
               - key: RAILS_ENV
                 value: production
               - key: RAILS_MASTER_KEY
-                sync: false
-              - key: SECRET_KEY_BASE
                 sync: false
 
           # Key Value store (from Heroku Redis — mini)
