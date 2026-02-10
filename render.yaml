@@ -5,13 +5,14 @@ projects:
     environments:
       - name: production
         services:
-          # Web service (from Heroku web dyno — Basic)
+          # Web service (from Heroku web dyno - Basic)
           - type: web
             name: ancient-anchorage-43691-web
             runtime: ruby
             plan: starter
             region: oregon
-            buildCommand: bundle install && bundle exec rake assets:precompile && bundle exec rake db:migrate
+            buildCommand: bundle install && bundle exec rake assets:precompile
+            preDeployCommand: bundle exec rake db:migrate
             startCommand: bundle exec puma -C config/puma.rb
             envVars:
               - key: DATABASE_URL
@@ -28,7 +29,7 @@ projects:
               - key: RAILS_MASTER_KEY
                 sync: false
 
-          # Background worker (from Heroku worker dyno — Basic)
+          # Background worker (from Heroku worker dyno - Basic)
           - type: worker
             name: ancient-anchorage-43691-worker
             runtime: ruby
@@ -51,7 +52,7 @@ projects:
               - key: RAILS_MASTER_KEY
                 sync: false
 
-          # Key Value store (from Heroku Redis — mini)
+          # Key Value (from Heroku Redis - mini)
           - type: keyvalue
             name: ancient-anchorage-43691-cache
             plan: starter
@@ -60,7 +61,7 @@ projects:
                 description: everywhere
 
         databases:
-          # Postgres (from Heroku Postgres — essential-0, 1 GB disk)
+          # Postgres (from Heroku Postgres - essential-0)
           - name: ancient-anchorage-43691-db
             plan: basic-256mb
             diskSizeGB: 1
