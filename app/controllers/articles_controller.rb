@@ -3,7 +3,7 @@ class ArticlesController < ApplicationController
 
   # GET /articles or /articles.json
   def index
-    @articles = Article.all
+    @articles = Article.includes(:comments).order(created_at: :desc)
   end
 
   # GET /articles/1 or /articles/1.json
@@ -60,7 +60,7 @@ class ArticlesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_article
-      @article = Article.find(params.expect(:id))
+      @article = Article.includes(:comments).find(params.expect(:id))
     end
 
     # Only allow a list of trusted parameters through.

@@ -1,16 +1,18 @@
-<p style="color: green"><%= notice %></p>
-
 <% content_for :title, "Articles" %>
 
-<h1>Articles</h1>
-
-<div id="articles">
+<ul class="article-list">
   <% @articles.each do |article| %>
-    <%= render article %>
-    <p>
-      <%= link_to "Show this article", article %>
-    </p>
+    <li>
+      <%= link_to article do %>
+        <div class="article-title"><%= article.title %></div>
+        <div class="article-meta">
+          <span><%= article.author %></span>
+          <span><%= article.created_at.strftime("%b %-d, %Y") %></span>
+          <span><%= pluralize(article.comments.size, "comment") %></span>
+        </div>
+      <% end %>
+    </li>
   <% end %>
-</div>
+</ul>
 
-<%= link_to "New article", new_article_path %>
+<%= link_to "New article", new_article_path, class: "new-link" %>

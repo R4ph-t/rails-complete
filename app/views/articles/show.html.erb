@@ -1,10 +1,38 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, @article.title %>
 
-<%= render @article %>
+<article>
+  <header class="article-header">
+    <h1><%= @article.title %></h1>
+    <div class="article-meta">
+      <span><%= @article.author %></span>
+      <span><%= @article.created_at.strftime("%b %-d, %Y") %></span>
+    </div>
+    <% if @article.processed? %>
+      <div class="article-status processed">Processed at <%= @article.processed_at.strftime("%H:%M:%S") %></div>
+    <% else %>
+      <div class="article-status">Processing via Sidekiq&hellip;</div>
+    <% end %>
+  </header>
 
-<div>
-  <%= link_to "Edit this article", edit_article_path(@article) %> |
-  <%= link_to "Back to articles", articles_path %>
+  <div class="article-body">
+    <%= simple_format(@article.body) %>
+  </div>
+</article>
 
-  <%= button_to "Destroy this article", @article, method: :delete %>
+<% if @article.comments.any? %>
+  <section class="comments-section">
+    <h2>Comments (<%= @article.comments.size %>)</h2>
+    <% @article.comments.each do |comment| %>
+      <div class="comment">
+        <%= comment.body %>
+      </div>
+    <% end %>
+  </section>
+<% end %>
+
+<div class="actions">
+  <%= link_to "Edit", edit_article_path(@article) %>
+  <%= button_to "Delete", @article, method: :delete %>
 </div>
+
+<%= link_to "All articles", articles_path, class: "back-link" %>
