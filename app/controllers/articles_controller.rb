@@ -1,9 +1,17 @@
 class ArticlesController < ApplicationController
   before_action :set_article, only: %i[ show edit update destroy ]
 
+  PER_PAGE = 20
+
   # GET /articles or /articles.json
   def index
-    @articles = Article.includes(:comments).order(created_at: :desc)
+    @page = [ params.fetch(:page, 1).to_i, 1 ].max
+    @total = Article.count
+    @total_pages = (@total.to_f / PER_PAGE).ceil
+    @articles = Article.includes(:comments)
+                       .order(created_at: :desc)
+                       .offset((@page - 1) * PER_PAGE)
+                       .limit(PER_PAGE)
   end
 
   # GET /articles/1 or /articles/1.json

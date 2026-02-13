@@ -1,5 +1,9 @@
 <% content_for :title, "Articles" %>
 
+<div class="index-header">
+  <span class="article-count"><%= number_with_delimiter(@total) %> articles</span>
+</div>
+
 <ul class="article-list">
   <% @articles.each do |article| %>
     <li>
@@ -14,5 +18,21 @@
     </li>
   <% end %>
 </ul>
+
+<nav class="pagination">
+  <% if @page > 1 %>
+    <%= link_to "\u2190 Prev", articles_path(page: @page - 1), class: "pagination-link" %>
+  <% else %>
+    <span class="pagination-link disabled">&larr; Prev</span>
+  <% end %>
+
+  <span class="pagination-info">Page <%= @page %> of <%= @total_pages %></span>
+
+  <% if @page < @total_pages %>
+    <%= link_to "Next \u2192", articles_path(page: @page + 1), class: "pagination-link" %>
+  <% else %>
+    <span class="pagination-link disabled">Next &rarr;</span>
+  <% end %>
+</nav>
 
 <%= link_to "New article", new_article_path, class: "new-link" %>
