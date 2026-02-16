@@ -1,0 +1,74 @@
+previews:
+  generation: off
+projects:
+  - name: rails-complete
+    environments:
+      - name: production
+        services:
+          # Web service (from Heroku web dyno)
+          - type: web
+            name: rails-complete-web
+            runtime: ruby
+            plan: starter
+            region: oregon
+            buildCommand: bundle install && bundle exec rake assets:precompile
+            preDeployCommand: bundle exec rake db:migrate
+            startCommand: bundle exec puma -C config/puma.rb
+            envVars:
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: rails-complete-db
+                  property: connectionString
+              - key: REDIS_URL
+                fromService:
+                  type: keyvalue
+                  name: rails-complete-cache
+                  property: connectionString
+              - key: RAILS_ENV
+                value: production
+              - key: RAILS_MASTER_KEY
+                sync: false
+              - key: SECRET_KEY_BASE
+                generateValue: true
+
+          # Background worker (from Heroku worker dyno)
+          - type: worker
+            name: rails-complete-worker
+            runtime: ruby
+            plan: starter
+            region: oregon
+            buildCommand: bundle install
+            startCommand: bundle exec sidekiq -C config/sidekiq.yml
+            envVars:
+              - key: DATABASE_URL
+                fromDatabase:
+                  name: rails-complete-db
+                  property: connectionString
+              - key: REDIS_URL
+                fromService:
+                  type: keyvalue
+                  name: rails-complete-cache
+                  property: connectionString
+              - key: RAILS_ENV
+                value: production
+              - key: RAILS_MASTER_KEY
+                sync: false
+              - key: SECRET_KEY_BASE
+                generateValue: true
+
+          # Key Value (from Heroku Redis mini)
+          - type: keyvalue
+            name: rails-complete-cache
+            plan: starter
+            region: oregon
+            ipAllowList:
+              - source: 0.0.0.0/0
+                description: everywhere
+
+        databases:
+          # Postgres (from Heroku Postgres essential-0)
+          - name: rails-complete-db
+            plan: basic-256mb
+            diskSizeGB: 1
+            postgresMajorVersion: "17"
+            region: oregon
